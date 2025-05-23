@@ -1,0 +1,39 @@
+on:
+  push:
+    branches: main
+  pull_request:
+
+concurrency:
+  group: ${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compile (${{ matrix.platform }})
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-14
+            xcode: 16.2
+          - platform: macos-15
+            xcode: 16.3
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo xcode-select -switch /Applications/Xcode_${{ matrix.xcode }}.app
+      - run: swift --version
+      - run: swift build
+      - run: swift package clean
+      - run: swift test --parallel
+  swift-format:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo xcode-select -switch /Applications/Xcode_16.3.app
+      - name: swift-format lint
+        run: |
+          xcrun swift-format lint . \
+            --parallel \
+            --recursive \
+            --strict
