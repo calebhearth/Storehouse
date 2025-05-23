@@ -52,4 +52,3 @@ public final class Storehouse<Key: Hashable & Sendable, Value: Sendable>: Sendab
 		}
 	}
 }
-

@@ -67,9 +67,12 @@ struct StorehouseTests {
 		}
 
 		let storehouse = Storehouse<Int, Bool>(dateProvider: dateProvider, entryLifetime: entryLifetime)
-		storehouse.insert(true, forKey: 1)  // dateProvider called first time to set expirationDate
-		#expect(storehouse.value(forKey: 1) == true)  // dateProvider called second time to check expirationDate, returns .now
-		#expect(storehouse.value(forKey: 1) == nil)  // dateProvider called third time, returns after expiration
+		// dateProvider called first time to set expirationDate
+		storehouse.insert(true, forKey: 1)
+		// dateProvider called second time to check expirationDate, returns .now
+		#expect(storehouse.value(forKey: 1) == true)
+		// dateProvider called third time, returns after expiration
+		#expect(storehouse.value(forKey: 1) == nil)
 	}
 
 	@Test func observationTrackingSettingValue() async {
